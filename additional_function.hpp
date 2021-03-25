@@ -12,3 +12,14 @@ void checkTheResultVec(std::vector<T> vec) {
     }
     std::cout<<"\n---\n";
 }
+
+template<class T>
+void checkTheResultText(std::vector<T> text) {
+    std::cout<<"\n---\n";
+    unsigned int lengthText = text.size();
+    std::cout<<"Size:"<<lengthText<<"\n";
+    for (unsigned int i = 0; i < text.size(); ++i) {
+        std::cout<<text[i].word<<' '<<text[i].lineNumber<<" "<<text[i].wordNumber<<'\n';
+    } 
+    std::cout<<"\n---\n";
+}
