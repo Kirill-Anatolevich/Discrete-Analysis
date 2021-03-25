@@ -20,6 +20,9 @@ private:
     char tmpCharacter;
     std::string str;
     TWord word;
+    std::unordered_map<unsigned int, std::vector<unsigned int>> characterOccurrence;
+    unsigned int patternSize;
+    std::vector<unsigned int> zFunctionRevPat;
 public:
     TApostolicoGiancarlo() {
         ReadingPattern();
@@ -42,6 +45,7 @@ public:
         text.push_back(word);
         tmpS.clear();
     }
+
     void ReadingPattern() {
         std::getline(std::cin, str);
         unsigned int strSize = str.size();
@@ -59,9 +63,12 @@ public:
                 tmpStrNumber.push_back(str[i]);
             }
         } 
-        addWordToPattern(tmpStrNumber);
-        checkTheResultVec(pattern);
+        if (!tmpStrNumber.empty()) {
+            addWordToPattern(tmpStrNumber);
+        }
+        //checkTheResultVec(pattern);
         str.clear();
+        patternSize = pattern.size();
     }
     
     void ReadingText() {
@@ -87,8 +94,10 @@ public:
                         tmpStrNumber.push_back(str[i]);
                     }
                 } 
-                ++wordNumber;
-                addWordToText(tmpStrNumber, lineNumber, wordNumber);
+                if (!tmpStrNumber.empty()) {
+                    ++wordNumber;
+                    addWordToText(tmpStrNumber, lineNumber, wordNumber);
+                }
                 str.clear();
                 }
             }
@@ -97,14 +106,35 @@ public:
             }
             c = getchar();
         }
-        checkTheResultText(text);
+        //checkTheResultText(text);
     }
 
     void RuleBadCharacter() {
+        for (unsigned int i = 0; i < patternSize; ++i) {
+            characterOccurrence[pattern[i]].push_back(i);
+        }  
+        //checkRuleBadCharacter(characterOccurrence, pattern);
+    }
+    
+    void ZFunction(std::vector<unsigned int> vec) {
+        for (unsigned int l = 0, r = 0, i = 1; i < patternSize; ++i) {
+            if (i <= r) {
+                zFunctionRevPat[i] = std::min(z[i - l], r - i + 1);
+            }
+            while (i + zFunctionRevPat[i] < patternSize && vec[zFunctionRevPat[i]] == vec[i + zFunctionRevPat[i]]) {
+                ++zFunctionRevPat[i];
+            }
+            if (i + zFunctionRevPat[i] - 1 > r) {
+                l = i;
+                r = i + zFunctionRevPat[i] - 1;
+            }
+       } 
     }
 
     void RuleGoodSuffix() {
-
+        std::vector<unsigned int> reversedPattern = pattern;
+        std::reverse(reversedPattern.begin(), reversedPattern.end());
+        checkTheResultVec(reversedPattern);
     }
 };
 
